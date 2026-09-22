@@ -183,36 +183,35 @@ The Director is justified because the same construction sequences can be named a
 
 ## 7. Part E — Clean Code: Before → After
 
-### Example 1 — Constructor call
+### Example 1 — Error handling in validation
 
-**BEFORE**
+**BEFORE** (a single undifferentiated check, as it would look without decomposition)
 
-```java
-new ComputerConstructorVersion(
-    "Intel Core i7", 16, storage, "Windows 11",
-    "RTX 4060", true, true,
-    "27 inch Gaming Monitor", "Mechanical Keyboard",
-    "Gaming Mouse", UsageType.GAMING
-);
-```
+private void validate() {
+if (cpu == null || cpu.isBlank()) {
+throw new IllegalArgumentException("Invalid configuration.");
+}
+if (ramGb <= 0) {
+throw new IllegalArgumentException("Invalid configuration.");
+}
+if (usageType == UsageType.GAMING && !hasDedicatedGpu()) {
+throw new IllegalArgumentException("Invalid configuration.");
+}
+if (operatingSystem.equalsIgnoreCase("Windows 11") && ramGb < 8) {
+throw new IllegalArgumentException("Invalid configuration.");
+}
+}
 
-**AFTER**
+**AFTER** (actual implementation)
 
-```java
-new Computer.Builder("Intel Core i7", 16, storage, "Windows 11")
-    .gpu("RTX 4060")
-    .enableWifi()
-    .enableBluetooth()
-    .monitor("27 inch Gaming Monitor")
-    .keyboard("Mechanical Keyboard")
-    .mouse("Gaming Mouse")
-    .usageType(UsageType.GAMING)
-    .build();
-```
+private void validate() {
+validateRequiredFields();
+validateGamingConstraint();
+validateWindowsConstraint();
+}
 
-**Principle:** descriptive naming / minimizing function arguments at the call site.  
-**Why better:** each optional choice is named by the method that sets it.
-
+**Principle:** clear error handling / DRY.
+**Why better:** every rule reports exactly what is wrong instead of a single generic message.
 ### Example 2 — Validation method
 
 **BEFORE**
@@ -300,11 +299,11 @@ The UML class diagram is stored in `docs/builder-uml.png` and corresponds to the
 | 4 | Blank CPU is rejected | Invalid construction |
 | 5 | Non-positive RAM is rejected | Invalid construction |
 | 6 | Missing OS is rejected | Invalid construction |
-| 7 | Windows 11 with exactly 8 GB is accepted | Boundary case |
-| 8 | 1 TB storage is accepted | Boundary case |
-| 9 | Gaming without a dedicated GPU is rejected | Individual constraint |
-| 10 | Reusing Builder does not change an earlier Product | Builder reuse / Product independence |
-
+| 7 | Windows 11 with exactly 8 GB RAM is accepted | Boundary case |
+| 8 | Windows 11 with 7 GB RAM is rejected | Boundary case (negative side) |
+| 9 | Minimal storage capacity (1 GB) is accepted | Boundary case |
+| 10 | Gaming without a dedicated GPU is rejected | Individual constraint |
+| 11 | Reusing Builder does not change an earlier Product | Builder reuse / Product independence |
 The tests verify observable behavior and error messages, not merely method execution.
 
 ## 11. Sample program output

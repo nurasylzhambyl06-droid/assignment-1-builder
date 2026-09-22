@@ -1,7 +1,4 @@
-/**
- * Part A snapshot used to demonstrate the design problem before Builder.
- * It is intentionally kept as a historical example, not used by the final application.
- */
+
 public class ComputerConstructorVersion {
     private final String cpu;
     private final int ramGb;
@@ -20,6 +17,7 @@ public class ComputerConstructorVersion {
                                       boolean wifi, boolean bluetooth,
                                       String monitor, String keyboard,
                                       String mouse, UsageType usageType) {
+
         this.cpu = cpu;
         this.ramGb = ramGb;
         this.storage = storage;
