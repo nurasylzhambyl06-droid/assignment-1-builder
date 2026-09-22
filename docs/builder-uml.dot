@@ -1,0 +1,22 @@
+digraph G {
+  graph [rankdir=LR, bgcolor="white", pad="0.3"];
+  node [shape=record, fontname="Arial", fontsize=10];
+  edge [fontname="Arial", fontsize=9];
+
+  Computer [label="{Computer| - cpu : String\l - ramGb : int\l - storage : Storage\l - operatingSystem : String\l - gpu : String\l - wifi : boolean\l - bluetooth : boolean\l - monitor : String\l - keyboard : String\l - mouse : String\l - usageType : UsageType\l| + getCpu() : String\l + getRamGb() : int\l + getStorage() : Storage\l + getOperatingSystem() : String\l + getGpu() : String\l + isWifi() : boolean\l + isBluetooth() : boolean\l + getMonitor() : String\l + getKeyboard() : String\l + getMouse() : String\l + getUsageType() : UsageType\l}"];
+  Builder [label="{Computer.Builder| - cpu : String\l - ramGb : int\l - storage : Storage\l - operatingSystem : String\l - gpu : String\l - wifi : boolean\l - bluetooth : boolean\l - monitor : String\l - keyboard : String\l - mouse : String\l - usageType : UsageType\l| + Builder(...)\l + gpu(String) : Builder\l + enableWifi() : Builder\l + disableWifi() : Builder\l + enableBluetooth() : Builder\l + monitor(String) : Builder\l + keyboard(String) : Builder\l + mouse(String) : Builder\l + usageType(UsageType) : Builder\l + build() : Computer\l - validate()\l}"];
+  Director [label="{ComputerDirector| + createBasic() : Computer\l + createGaming() : Computer\l + createProfessional() : Computer\l}"];
+  Client [label="{Main| + main(String[]) : void\l}"];
+  Storage [label="{Storage| - type : String\l - capacityGb : int\l| + Storage(String, int)\l + getType() : String\l + getCapacityGb() : int\l}"];
+  UsageType [label="{UsageType (enumeration)| BASIC\l GAMING\l PROFESSIONAL\l}"];
+
+  Builder -> Computer [label="build() creates", arrowhead="vee"];
+  Computer -> Storage [label="has 1"];
+  Computer -> UsageType [label="uses"];
+  Builder -> Storage [label="configures"];
+  Builder -> UsageType [label="configures"];
+  Director -> Builder [label="uses"];
+  Director -> Computer [label="returns"];
+  Client -> Director [label="uses"];
+  Client -> Builder [label="custom configuration"];
+}
